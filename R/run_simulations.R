@@ -15,7 +15,7 @@ pars <- list(
   eps = c(-0.5, -1),
   rho =  c(-0.9, 0.5),
   n = c(30, 50),
-  nseason = 5,
+  nseason = 8,
   nrep = 4,
   nsim = 500
 )
@@ -27,7 +27,7 @@ cat("\nDynamic: Different signs, large effect\n")
 dyn_sim <- dynamic_simulate(
   par_list = pars
 )
-dyn_sim$type <- "Different signs, large effect"
+dyn_sim$type <- "dynamic_different_signs_large_effect"
 
 all_sims[[1]] <- dyn_sim
 
@@ -38,7 +38,7 @@ pars <- list(
   eps = c(-0.5, -0.3),
   rho =  c(-0.9, 0.5),
   n = c(30, 50),
-  nseason = 5,
+  nseason = 8,
   nrep = 4,
   nsim = 500
 )
@@ -46,7 +46,7 @@ cat("\nDynamic: Different signs, small effect\n")
 dyn_sim <- dynamic_simulate(
   par_list = pars
 )
-dyn_sim$type <- "Different signs, small effect"
+dyn_sim$type <- "dynamic_different_signs_small_effect"
 
 all_sims[[2]] <- dyn_sim
 
@@ -58,7 +58,7 @@ pars <- list(
   eps = c(0.5, 1),
   rho =  c(-0.9, 0.5),
   n = c(30, 50),
-  nseason = 5,
+  nseason = 8,
   nrep = 4,
   nsim = 500
 )
@@ -66,7 +66,7 @@ cat("\nDynamic: Same signs, large effect\n")
 dyn_sim <- dynamic_simulate(
   par_list = pars
 )
-dyn_sim$type <- "Same signs, large effect"
+dyn_sim$type <- "dynamic_same_signs_large_effect"
 
 all_sims[[3]] <- dyn_sim
 
@@ -77,7 +77,7 @@ pars <- list(
   eps = c(0.5, 0.3),
   rho =  c(-0.9, 0.5),
   n = c(30, 50),
-  nseason = 5,
+  nseason = 8,
   nrep = 4,
   nsim = 500
 )
@@ -85,7 +85,7 @@ cat("\nDynamic: Same signs, small effect\n")
 dyn_sim <- dynamic_simulate(
   par_list = pars
 )
-dyn_sim$type <- "same signs, small effect"
+dyn_sim$type <- "dynamic_same_signs_small_effect"
 
 all_sims[[4]] <- dyn_sim
 
@@ -99,7 +99,7 @@ pars <- list(
   theta = 1,
   rho =  c(-0.9, 0.5),
   n = c(30, 50),
-  nseason = 5,
+  nseason = 8,
   nrep = 4,
   nsim = 500
 )
@@ -108,7 +108,7 @@ at_sim <- autologistic_simulate(
   par_list = pars
 )
 
-at_sim$type <- "autologistic, large effect"
+at_sim$type <- "autologistic_large_effect"
 
 
 all_sims[[5]] <- at_sim
@@ -119,7 +119,7 @@ pars <- list(
   theta = 1,
   rho =  c(-0.9, 0.5),
   n = c(30, 50),
-  nseason = 5,
+  nseason = 8,
   nrep = 4,
   nsim = 500
 )
@@ -128,7 +128,7 @@ at_sim <- autologistic_simulate(
   par_list = pars
 )
 
-at_sim$type <- "autologistic, small effect"
+at_sim$type <- "autologistic_small_effect"
 
 all_sims[[6]] <- at_sim
 
