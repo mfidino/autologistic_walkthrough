@@ -17,7 +17,7 @@ pars <- list(
   n = c(30, 50),
   nseason = 8,
   nrep = 4,
-  nsim = 500
+  nsim = 550
 )
 cat("\n\n##############################\n")
 cat("Dynamic occupancy model\n")
@@ -40,7 +40,7 @@ pars <- list(
   n = c(30, 50),
   nseason = 8,
   nrep = 4,
-  nsim = 500
+  nsim = 550
 )
 cat("\nDynamic: Different signs, small effect\n")
 dyn_sim <- dynamic_simulate(
@@ -60,7 +60,7 @@ pars <- list(
   n = c(30, 50),
   nseason = 8,
   nrep = 4,
-  nsim = 500
+  nsim = 550
 )
 cat("\nDynamic: Same signs, large effect\n")
 dyn_sim <- dynamic_simulate(
@@ -79,7 +79,7 @@ pars <- list(
   n = c(30, 50),
   nseason = 8,
   nrep = 4,
-  nsim = 500
+  nsim = 550
 )
 cat("\nDynamic: Same signs, small effect\n")
 dyn_sim <- dynamic_simulate(
@@ -101,7 +101,7 @@ pars <- list(
   n = c(30, 50),
   nseason = 8,
   nrep = 4,
-  nsim = 500
+  nsim = 550
 )
 cat("\nAutologistic: large effect\n")
 at_sim <- autologistic_simulate(
@@ -121,7 +121,7 @@ pars <- list(
   n = c(30, 50),
   nseason = 8,
   nrep = 4,
-  nsim = 500
+  nsim = 550
 )
 cat("\nAutologistic: small effect\n")
 at_sim <- autologistic_simulate(

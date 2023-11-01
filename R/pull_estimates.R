@@ -12,6 +12,35 @@ for(i in 1:length(my_files)){
       my_files[i]
     )
   )
+  # first check to see if model converged
+  all_there <- sapply(
+    fit,
+    function(x) all(
+      complete.cases(x@estimates)
+    )
+  )
+  resave <- FALSE
+  if(any(!all_there)){
+    fit <- fit[-which(!all_there)]
+    resave <- TRUE
+  }
+  if(length(fit)< 500){
+    stop("run more simulations to get to 500.")
+  }
+  if(length(fit) > 500){
+    fit <- fit[1:500]
+    resave <- TRUE
+  }
+  if(resave){
+    saveRDS(
+      fit,
+      paste0(
+        "./data/",
+        my_files[i]
+      )
+    )
+  }
+
   my_coefs <- lapply(
     fit,
     function(x) x@estimates
@@ -23,6 +52,15 @@ for(i in 1:length(my_files)){
       unique(my_coefs$parameter)
     )
   )
+  to_go <- which(
+    !complete.cases(my_coefs)
+  )
+  if(length(to_go) > 0){
+    bad_sims <- unique(
+      my_coefs$simulation[to_go]
+    )
+    fit <- fit[-bad_sims]
+  }
   write.csv(
     my_coefs,
     paste0(
