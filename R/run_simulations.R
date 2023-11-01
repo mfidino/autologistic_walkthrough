@@ -132,6 +132,10 @@ at_sim$type <- "autologistic_small_effect"
 
 all_sims[[6]] <- at_sim
 
+names(all_sims) <- sapply(
+  all_sims,
+  function(x) x$type
+)
 rm(
    list = c(
      "at_sim", "dyn_sim", "pars", "autologistic_simulate", "dynamic_simulate"
