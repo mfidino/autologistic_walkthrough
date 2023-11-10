@@ -122,30 +122,105 @@ for(i in 1:3){
     pos = 4
   )
 
-  bbplot::blank(xlim = c(0.95,1), ylim = c(0.9,3.5))
+  # bbplot::blank(xlim = c(0.95,1), ylim = c(0.9,3.5))
+  # bbplot::axis_blank(1)
+  # bbplot::axis_text(side = 1, line = 1)
+  # bbplot::axis_text("Coverage", side = 1, line = 2.5, cex = 1.2)
+  # 
+  # for(i in 1:3){
+  #   lines(
+  #     x = c(
+  #       coef_results$thirty_small$coverage[i],
+  #       coef_results$fifty_small$coverage[i]
+  #     ),
+  #     y = rep(4 - i, 2),
+  #     col = "gray",
+  #     lwd = 3.5
+  #   )
+  #   points(
+  #     x = coef_results$thirty_small$coverage[i],
+  #     y = 4-i,
+  #     pch = 21,
+  #     bg = "#FE9000",
+  #     cex = 2
+  #   )
+  #   points(
+  #     x = coef_results$fifty_small$coverage[i],
+  #     y = 4-i,
+  #     pch = 24,
+  #     bg = "#FE9000",
+  #     cex = 2
+  #   )
+  #   lines(
+  #     x = c(
+  #       coef_results$thirty_large$coverage[i],
+  #       coef_results$fifty_large$coverage[i]
+  #     ),
+  #     y = rep(4.33 - i, 2),
+  #     col = "gray",
+  #     lwd = 3.5
+  #   )
+  #   points(
+  #     x = coef_results$thirty_large$coverage[i],
+  #     y = 4.33-i,
+  #     pch = 21,
+  #     bg = "#19647E",
+  #     cex = 2
+  #   )
+  #   points(
+  #     x = coef_results$fifty_large$coverage[i],
+  #     y = 4.33-i,
+  #     pch = 24,
+  #     bg = "#19647E",
+  #     cex = 2
+  #   )
+  # }
+  # par(xpd = NA)
+  #text(
+  #  y = 3.6,
+  #  x = 0.953,
+  #  labels = expression(beta[0]),
+  #  cex = 2,
+  #  pos = 4
+  #)
+  #text(
+  #  y = 2.6,
+  #  x = 0.953,
+  #  labels = expression(beta[1]),
+  #  cex = 2,
+  #  pos = 4
+  #)
+  #text(
+  #  y = 1.6,
+  #  x = 0.953,
+  #  labels = expression(theta),
+  #  cex = 2,
+  #  pos = 4
+  #)
+  bbplot::blank(xlim = c(0,5), ylim = c(0.9,3.5))
   bbplot::axis_blank(1)
   bbplot::axis_text(side = 1, line = 1)
-  bbplot::axis_text("Coverage", side = 1, line = 2.5, cex = 1.2)
-
+  bbplot::axis_text("Average CI width", side = 1, line = 2.5, cex = 1.2)
+  
   for(i in 1:3){
     lines(
       x = c(
-        coef_results$thirty_small$coverage[i],
-        coef_results$fifty_small$coverage[i]
+        coef_results$thirty_small$ci_width[i],
+        coef_results$fifty_small$ci_width[i]
       ),
       y = rep(4 - i, 2),
       col = "gray",
       lwd = 3.5
     )
     points(
-      x = coef_results$thirty_small$coverage[i],
+      x = coef_results$thirty_small$ci_width[i],
       y = 4-i,
       pch = 21,
       bg = "#FE9000",
       cex = 2
     )
     points(
-      x = coef_results$fifty_small$coverage[i],
+      x = coef_results$fifty_small$ci_width[i],
       y = 4-i,
       pch = 24,
       bg = "#FE9000",
@@ -153,22 +228,22 @@ for(i in 1:3){
     )
     lines(
       x = c(
-        coef_results$thirty_large$coverage[i],
-        coef_results$fifty_large$coverage[i]
+        coef_results$thirty_large$ci_width[i],
+        coef_results$fifty_large$ci_width[i]
       ),
       y = rep(4.33 - i, 2),
       col = "gray",
       lwd = 3.5
     )
     points(
-      x = coef_results$thirty_large$coverage[i],
+      x = coef_results$thirty_large$ci_width[i],
       y = 4.33-i,
       pch = 21,
       bg = "#19647E",
       cex = 2
     )
     points(
-      x = coef_results$fifty_large$coverage[i],
+      x = coef_results$fifty_large$ci_width[i],
       y = 4.33-i,
       pch = 24,
       bg = "#19647E",
@@ -176,27 +251,27 @@ for(i in 1:3){
     )
   }
   par(xpd = NA)
-  text(
-    y = 3.6,
-    x = 0.953,
-    labels = expression(beta[0]),
-    cex = 2,
-    pos = 4
-  )
-  text(
-    y = 2.6,
-    x = 0.953,
-    labels = expression(beta[1]),
-    cex = 2,
-    pos = 4
-  )
-  text(
-    y = 1.6,
-    x = 0.953,
-    labels = expression(theta),
-    cex = 2,
-    pos = 4
-  )
+  #text(
+  #  y = 3.6,
+  #  x = 0.953,
+  #  labels = expression(beta[0]),
+  #  cex = 2,
+  #  pos = 4
+  #)
+  #text(
+  #  y = 2.6,
+  #  x = 0.953,
+  #  labels = expression(beta[1]),
+  #  cex = 2,
+  #  pos = 4
+  #)
+  #text(
+  #  y = 1.6,
+  #  x = 0.953,
+  #  labels = expression(theta),
+  #  cex = 2,
+  #  pos = 4
+  #)
 }
 bbplot::blank(xlim = c(0,1), ylim = c(0,1))
 legend(
@@ -220,16 +295,4 @@ legend(
 )
 
 
-legend(
-  x = 0.1,
-  y = 0,
-  legend = c(
-    "30 sites, large effect size",
-    "50 sites, large effect size",
-    "30 sites, small effect size",
-    "50 sites, large effect size"
-  ),
-  pch = c(21, 24, 21, 24),
-  pt.bg = c("#19647E", "#19647E", "#FE9000", "#FE9000"),
-  border = NULL
-  )
+
