@@ -1,5 +1,5 @@
 fit_simulations <- function(data, ncores = 10, nsim){
-  num_cores <- 10
+  num_cores <- ncores
   
   cl <- parallel::makeCluster(
     ncores
@@ -10,8 +10,9 @@ fit_simulations <- function(data, ncores = 10, nsim){
   )
   
   parallel::clusterEvalQ(
-    cl, 
+    cl,
     library("autoOcc")
+
   )
   my_iter <- 1:nsim
   
@@ -22,6 +23,81 @@ fit_simulations <- function(data, ncores = 10, nsim){
       det_covs = data[[i]]$x,
       occ_covs = data[[i]]$x
     )
+  }
+  
+  parallel::stopCluster(cl)
+  return(result)
+}
+
+
+
+fit_sweep <- function(data, ncores = 10, nsim, auto = TRUE){
+  
+  cl <- parallel::makeCluster(
+    ncores
+  )
+  
+  doParallel::registerDoParallel(
+    cl
+  )
+  
+  parallel::clusterEvalQ(
+    cl,
+    {
+      library("autoOcc")
+      library("unmarked")
+    }
+  )
+  my_iter <- 1:nsim
+  if(auto){
+    result <- foreach::foreach(i = my_iter) %dopar% {
+      autoOcc::auto_occ(
+        ~x~x,
+        y = data[[i]]$y,
+        det_covs = data[[i]]$x,
+        occ_covs = data[[i]]$x
+      )
+    }
+  }else{
+    result <- foreach::foreach(i = my_iter) %dopar% {
+      dims <- dim(data[[i]]$y)
+      nsite <- dims[1]
+      nprimary <- dims[2]
+      nrep <- dims[3]
+      tmp_y <- tmp_obs <- matrix(
+        NA,
+        ncol = nprimary * nrep,
+        nrow = nsite
+      )
+      j_loc <- rep(
+        1:nprimary,
+        each = nrep
+      )
+      for(j in 1:nprimary){
+        tmp_y[,which(j_loc == j)] <- data[[i]]$y[,j,]
+      }
+      tmp_y <- data.frame(tmp_y)
+      tmp_obs <- data.frame(
+        matrix(
+          data[[i]]$x$x,
+          ncol = nprimary * nrep,
+          nrow = nsite
+        )
+      )
+      tmp_obs <- list(
+        x = tmp_obs
+      )
+      umf <- unmarkedMultFrame(
+        y = tmp_y,
+        siteCovs = data.frame(
+          x = data[[i]]$x$x
+        ),
+        obsCovs = tmp_obs,
+        numPrimary = nprimary
+      )
+      dyn_fit <- colext(~x,~x,~x,~x, umf)
+      dyn_fit
+    }
   }
   
   parallel::stopCluster(cl)
