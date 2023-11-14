@@ -4,8 +4,9 @@ my_files <- list.files(
   "./data",
   "*.RDS",
 )
-
+pb <- txtProgressBar(max= length(my_files))
 for(i in 1:length(my_files)){
+  setTxtProgressBar(pb, i)
   fit <- readRDS(
     paste0(
       "./data/",
@@ -31,15 +32,15 @@ for(i in 1:length(my_files)){
     fit <- fit[1:500]
     resave <- TRUE
   }
-  if(resave){
-    saveRDS(
-      fit,
-      paste0(
-        "./data/",
-        my_files[i]
-      )
-    )
-  }
+  #if(resave){
+  #  saveRDS(
+  #    fit,
+  #    paste0(
+  #      "./data/",
+  #      my_files[i]
+  #    )
+  #  )
+  #}
 
   my_coefs <- lapply(
     fit,
@@ -52,15 +53,7 @@ for(i in 1:length(my_files)){
       unique(my_coefs$parameter)
     )
   )
-  to_go <- which(
-    !complete.cases(my_coefs)
-  )
-  if(length(to_go) > 0){
-    bad_sims <- unique(
-      my_coefs$simulation[to_go]
-    )
-    fit <- fit[-bad_sims]
-  }
+  
   write.csv(
     my_coefs,
     paste0(
@@ -80,7 +73,9 @@ new_data <- data.frame(
   x = seq(-2,2, length.out = 200)
 )
 
+pb <- txtProgressBar(max= length(my_files))
 for(i in 1:length(my_files)){
+  setTxtProgressBar(pb, i)
   fit <- readRDS(
     paste0(
       "./data/",

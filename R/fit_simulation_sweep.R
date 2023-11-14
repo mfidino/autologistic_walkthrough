@@ -25,41 +25,46 @@ for(r in 1:4){
   
   for(s in 1:nt_options){
     setTxtProgressBar(pb, s)
-    # fit autologistic
-    fit_auto <- fit_sweep(
-      data = sim_list$auto[[r]][[s]]$data,
-      ncores = 2,
-      nsim = 5#sim_list$targets$others$nsim[s]
-    )
     file_name <- paste0(
       "./data/sweep_fits/auto",r,
       "_n",sim_list$targets$others$n[s],
       "_t",sim_list$targets$others$nseason[s],
       ".RDS"
     )
-    
-    saveRDS(
-      fit_auto,
-      file_name
-    )
-    rm(fit_auto)
-    gc()
-    fit_dynamic <- fit_sweep(
-      data = sim_list$dynamic[[r]][[s]]$data,
-      ncores = 2,
-      nsim = 5,#sim_list$targets$others$nsim[s],
-      auto = FALSE
-    )
+    if(!file.exists(file_name)){
+      # fit autologistic
+      fit_auto <- fit_sweep(
+        data = sim_list$auto[[r]][[s]]$data,
+        ncores = 10,
+        nsim = sim_list$targets$others$nsim[s]
+      )
+      saveRDS(
+        fit_auto,
+        file_name
+      )
+      rm(fit_auto)
+      gc()
+    }
     file_name <- paste0(
       "./data/sweep_fits/dynamic",r,
       "_n",sim_list$targets$others$n[s],
       "_t",sim_list$targets$others$nseason[s],
       ".RDS"
     )
+    if(!file.exists(file_name)){
     
-    saveRDS(
-      fit_dynamic,
-      file_name
-    )
+      fit_dynamic <- fit_sweep(
+        data = sim_list$dynamic[[r]][[s]]$data,
+        ncores = 10,
+        nsim = sim_list$targets$others$nsim[s],
+        auto = FALSE
+      )
+      saveRDS(
+        fit_dynamic,
+        file_name
+      )
+      rm(fit_dynamic)
+      gc()
+    }
   }
 }

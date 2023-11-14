@@ -50,16 +50,16 @@ fit_sweep <- function(data, ncores = 10, nsim, auto = TRUE){
   )
   my_iter <- 1:nsim
   if(auto){
-    result <- foreach::foreach(i = my_iter) %dopar% {
-      autoOcc::auto_occ(
-        ~x~x,
-        y = data[[i]]$y,
-        det_covs = data[[i]]$x,
-        occ_covs = data[[i]]$x
-      )
+    result <- foreach::foreach(i = my_iter, .errorhandling = "pass") %dopar% {
+        autoOcc::auto_occ(
+          ~x~x,
+          y = data[[i]]$y,
+          det_covs = data[[i]]$x,
+          occ_covs = data[[i]]$x
+        )
     }
   }else{
-    result <- foreach::foreach(i = my_iter) %dopar% {
+    result <- foreach::foreach(i = my_iter, .errorhandling = "pass") %dopar% {
       dims <- dim(data[[i]]$y)
       nsite <- dims[1]
       nprimary <- dims[2]
@@ -95,7 +95,8 @@ fit_sweep <- function(data, ncores = 10, nsim, auto = TRUE){
         obsCovs = tmp_obs,
         numPrimary = nprimary
       )
-      dyn_fit <- colext(~x,~x,~x,~x, umf)
+      
+      colext(~x,~x,~x,~x, umf)
       dyn_fit
     }
   }
