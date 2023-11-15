@@ -241,7 +241,7 @@ dynamic_simulate2 <- function(par_list){
         tmp_prob <- (
           (1 - z[,yr-1]) * gamma_prob
         ) + (
-          z[,yr-1] * eps_prob
+          z[,yr-1] * (1 - eps_prob)
         )
         z[,yr] <- rbinom(
           par_list$n[n],

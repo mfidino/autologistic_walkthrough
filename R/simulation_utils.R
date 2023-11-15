@@ -96,7 +96,7 @@ fit_sweep <- function(data, ncores = 10, nsim, auto = TRUE){
         numPrimary = nprimary
       )
       
-      colext(~x,~x,~x,~x, umf)
+      dyn_fit <- colext(~x,~x,~x,~x, umf)
       dyn_fit
     }
   }
@@ -113,17 +113,24 @@ rmse <- function(xi, x){
   return(tmp)
 }
 
-calc_rmse <- function(one_coef, truth){
+calc_rmse <- function(one_coef, truth, auto = TRUE){
   cnames <- unique(one_coef$parameter)
   tmp <- data.frame(
     parameter = cnames,
     rmse = NA,
     coverage = NA,
-    ci_width = NA
+    ci_width = NA,
+    signif = NA
   )
-  tpars <- c(
-    truth$psi, truth$theta, truth$rho
-  )
+  if(auto){
+    tpars <- c(
+      truth$psi, truth$theta, truth$rho
+    )
+  } else {
+    tpars <- c(
+      truth$psi, truth$gamma, truth$eps, truth$rho
+    )
+  }
   for(i in 1:nrow(tmp)){
     tmp_coef <- one_coef[
       one_coef$parameter == tmp$parameter[i],
@@ -138,6 +145,9 @@ calc_rmse <- function(one_coef, truth){
     )
     tmp$ci_width[i] <- mean(
       abs(tmp_coef$upper - tmp_coef$lower)
+    )
+    tmp$signif[i] <- mean(
+      tmp_coef$p < 0.05
     )
   }
   return(tmp)
