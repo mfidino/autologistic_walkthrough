@@ -35,7 +35,7 @@ for(r in 1:4){
       # fit autologistic
       fit_auto <- fit_sweep(
         data = sim_list$auto[[r]][[s]]$data,
-        ncores = 10,
+        ncores = 6,
         nsim = sim_list$targets$others$nsim[s]
       )
       saveRDS(
@@ -55,7 +55,7 @@ for(r in 1:4){
     
       fit_dynamic <- fit_sweep(
         data = sim_list$dynamic[[r]][[s]]$data,
-        ncores = 10,
+        ncores = 6,
         nsim = sim_list$targets$others$nsim[s],
         auto = FALSE
       )
