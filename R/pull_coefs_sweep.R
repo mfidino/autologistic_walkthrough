@@ -15,8 +15,9 @@ results <- vector(
   "list",
   length = length(my_files)
 )
-
-for(i in 1:length(my_files)){
+pb <- txtProgressBar(max = length(my_files))
+for(i in 161:length(my_files)){
+  setTxtProgressBar(pb, i)
   one_file <- readRDS(
     paste0(
       "./data/sweep_fits/",
@@ -67,6 +68,22 @@ for(i in 1:length(my_files)){
   other_targets <- sim_list$targets$others[my_row,]
   if(model_info[[i]]$model == "auto"){
     # get coefficients
+    file_class <- 
+      sapply(
+        one_file,
+        class
+      )
+    to_go <- which(
+      sapply(
+        file_class,
+        function(x){
+          all(x != "auto_occ_fit")
+        }
+      )
+    )
+    if(length(to_go)> 0){
+      one_file <- one_file[-to_go]
+    }
     my_coefs <- lapply(
       one_file,
       function(x)x@estimates
@@ -76,11 +93,12 @@ for(i in 1:length(my_files)){
       my_coefs,
       function(x) all(complete.cases(x))
     )
+    nsim <- sum(to_keep)
     if(any(to_keep == FALSE)){
-      stop()
+      my_coefs <- my_coefs[-which(!to_keep)]
     }
     my_coefs <- dplyr::bind_rows(my_coefs)
-    one_coef <- my_coefs
+    #one_coef <- my_coefs
     this_truth <- list(
       psi = c(
         latent_targets$psi,
@@ -105,7 +123,9 @@ for(i in 1:length(my_files)){
         tmp[[k]] <- my_coefs[[j]][[k]]@estimates
       }
       ests <- unlist(tmp)
-      SEs <- unmarked:::SE(one_file[[j]])
+      SEs <- suppressWarnings(
+        unmarked:::SE(one_file[[j]])
+      )
       Z <- ests/SEs
       p <- 2*pnorm(abs(Z), lower.tail = FALSE)
       um_coef_frame[[j]] <- data.frame(
@@ -123,16 +143,6 @@ for(i in 1:length(my_files)){
     }
     my_coefs <- um_coef_frame
     
-    }
-    # check if they are all complete cases
-    to_keep <- sapply(
-      my_coefs,
-      function(x) all(complete.cases(x))
-    )
-    if(any(to_keep == FALSE)){
-      stop()
-    }
-    my_coefs <- dplyr::bind_rows(my_coefs)
     this_truth <- list(
       psi = c(
         other_targets$init_psi,
@@ -151,7 +161,19 @@ for(i in 1:length(my_files)){
         0.5
       )
     )
+    
+    # check if they are all complete cases
+    to_keep <- sapply(
+      my_coefs,
+      function(x) all(complete.cases(x))
+    )
+    nsim <- sum(to_keep)
+    if(any(to_keep == FALSE)){
+      my_coefs <- my_coefs[-which(!to_keep)]
+    }
+    my_coefs <- dplyr::bind_rows(my_coefs)
   }
+  
     rmse_result <- calc_rmse(
       one_coef = my_coefs,
       truth = this_truth,
@@ -161,9 +183,20 @@ for(i in 1:length(my_files)){
     rmse_result$nseason <- model_info[[i]]$nseason
     rmse_result$model <- model_info[[i]]$model
     rmse_result$scenario <- model_info[[i]]$scenario
+    rmse_result$nconverged <- nsim
     
     results[[i]] <- rmse_result
 
   
-  }
+}
+
+res_df <- dplyr::bind_rows(
+  results
+)
+
+write.csv(
+  res_df,
+  "./data/sim_sweep_rmse.csv",
+  row.names = FALSE
+)
   
