@@ -1,4 +1,5 @@
 one_plot <- function(x, xax = FALSE, yax = FALSE, param, zrange,
+                     type,
                      return_mean = FALSE){
   #my_pallete <- colorRampPalette(c("#3A2449", "#c4d7f2", "#f0f7ee"))
   
@@ -8,7 +9,7 @@ one_plot <- function(x, xax = FALSE, yax = FALSE, param, zrange,
   yval <- sort(unique(x$nseason))
   xval <- sort(unique(x$nsite))
   resmat <- matrix(
-    x$rmse,
+    x[,type, drop = TRUE],
     ncol = length(unique(x$nseason)),
     nrow = length(unique(x$nsite)),
     byrow = TRUE
@@ -16,15 +17,16 @@ one_plot <- function(x, xax = FALSE, yax = FALSE, param, zrange,
   if(any(resmat>zrange[2])){
     resmat[resmat>zrange[2]] <- zrange[2]
   }
-  
-  my_pallete <- pals::ocean.thermal(100)
+
+    my_pallete <- pals::ocean.thermal(100)
+
   bbplot::blank(
     xlim = range(xval),
     ylim = range(yval),
     bty = "l"
   )
-  bbplot::axis_blank(side = 1)
-  bbplot::axis_blank(side = 2)
+  bbplot::axis_blank(side = 1, at = sort(unique(x$nsite)), minor = FALSE, tck = -0.03)
+  bbplot::axis_blank(side = 2, at = sort(unique(x$nseason)), minor = FALSE, tck = -0.03)
   if(xax){
     bbplot::axis_text(
       text = range(xval),
@@ -56,7 +58,7 @@ one_plot <- function(x, xax = FALSE, yax = FALSE, param, zrange,
   )
   box(which = "plot", bty = "l", lwd = 1)
   if(return_mean){
-    return(mean(x$rmse))
+    return(mean(x[,type]))
   }
   
 }
