@@ -16,7 +16,7 @@ results <- vector(
   length = length(my_files)
 )
 pb <- txtProgressBar(max = length(my_files))
-for(i in 161:length(my_files)){
+for(i in 1:length(my_files)){
   setTxtProgressBar(pb, i)
   one_file <- readRDS(
     paste0(
@@ -67,6 +67,7 @@ for(i in 161:length(my_files)){
   # get other targets (slope terms mostly)
   other_targets <- sim_list$targets$others[my_row,]
   if(model_info[[i]]$model == "auto"){
+    is_auto <- TRUE
     # get coefficients
     file_class <- 
       sapply(
@@ -111,6 +112,7 @@ for(i in 161:length(my_files)){
     )
   }
   if(model_info[[i]]$model == "dynamic"){
+    is_auto <- FALSE
     # get coefficients
     my_coefs <- lapply(
       one_file,
@@ -177,7 +179,7 @@ for(i in 161:length(my_files)){
     rmse_result <- calc_rmse(
       one_coef = my_coefs,
       truth = this_truth,
-      auto = FALSE
+      auto = is_auto
     )
     rmse_result$nsite <- model_info[[i]]$nsite
     rmse_result$nseason <- model_info[[i]]$nseason

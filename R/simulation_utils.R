@@ -149,6 +149,8 @@ calc_rmse <- function(one_coef, truth, auto = TRUE){
     tmp$signif[i] <- mean(
       tmp_coef$p < 0.05
     )
+    tmp$rel_bias[i] <- 
+      (mean(tmp_coef$Est) - tpars[i]) / abs(tpars[i])
   }
   return(tmp)
 }
