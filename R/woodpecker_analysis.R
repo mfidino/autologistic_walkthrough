@@ -1,4 +1,7 @@
 library(autoOcc)
+library(bbplot)
+
+
 
 # Woodpecker analysis
 
@@ -289,9 +292,17 @@ aic_results <- autoOcc::compare_models(
   digits = 2
 )
 
+# remove the other models as we will not need them
+rm(
+  list = c(
+    "temporal_model", "null_model"
+  )
+)
 # Plot some results from the best fit model ####
 
-
+msum <- summary(
+  landscape_temporal_model
+)
 
 
 
