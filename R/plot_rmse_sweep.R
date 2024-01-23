@@ -500,7 +500,7 @@ tiff(
     cex = 1.2,
     line = 3
   )
-  my_legend <- as.raster(matrix(pals::coolwarm(100), ncol = 100))
+  my_legend <- as.raster(matrix(pals::ocean.thermal(100), ncol = 100))
   par(xpd = NA)
   rasterImage(
     my_legend,
