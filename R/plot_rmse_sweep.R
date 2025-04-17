@@ -1,5 +1,6 @@
 library(bbplot)
 library(pals)
+library(dplyr)
 
 ### Read in data ####
 
@@ -11,6 +12,25 @@ sdf <- read.csv(
 )
 
 sdf <- sdf[-which(sdf$parameter %in% c("psi(Int)", "psi(x)")),]
+
+# figure out scenarios where all model params have less than
+#  0.1 rmse for latent state parameters.
+
+auto <- sdf[grep("psi -", sdf$parameter),]
+auto$model <- "autologistic"
+dyn <- sdf[grep("psi\\(|col\\(|ext\\(", sdf$parameter),]
+dyn$model <- "dynamic"
+
+rmse_search <- dplyr::bind_rows(auto, dyn)
+
+rmse_search <- rmse_search %>% 
+  dplyr::group_by(nsite, nseason, scenario, model) %>% 
+  dplyr::summarise(rmse = sum(rmse <=0.5) == length(rmse))
+
+rmase_summary <- rmse_search %>% 
+  dplyr::group_by(model) %>% 
+  dplyr::summarise(n = sum(rmse))
+
 
 sdf$rel_bias[sdf$rel_bias > 5] <- 5
 sdf$ci_width[sdf$ci_width > 5] <- 5
