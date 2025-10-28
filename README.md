@@ -35,7 +35,7 @@ The data folder has two sub-folders (one for each case study). Aside from this, 
 
 | Column | Data-type | Description |
 |---|---|---|
-| parameter | categorical | The associated parameter across the simulation scenarios. For the autologistic model, parameters are split between the latent state model with psi and the detection model with rho. For the dynamic model, parameters are split between psi, col, and ext for the latent state (initial occupancy, colonizations, and extinction) and p for the detection model. Within each, thee are intercepts (Int) and the slope term for the simulated covariate (x). Each simulation scenario will have multiple rows, one per parameter. |
+| parameter | categorical | The associated parameter across the simulation scenarios. For the autologistic model, parameters are split between the latent state model with psi and the detection model with rho. For the dynamic model, parameters are split between psi, col, and ext for the latent state (initial occupancy, colonization, and extinction) and p for the detection model. Within each, thee are intercepts (Int) and the slope term for the simulated covariate (x). Each simulation scenario will have multiple rows, one per parameter. |
 | rmse | numeric | The root mean square error of the parameter estimate. |
 | coverage | numeric | The proportion of simulations where the true simulated parameter value was within the 95% CI of the parameter estimate. |
 | ci_width | numeric | The absolute difference in the lower and upper 95% confidence interval of the associated parameter estimate. |
@@ -60,7 +60,7 @@ This sub-folder only contains one dataset: `./data/opossum/ohare_weather.csv`, w
 | LATITUDE | numeric | The latitude of the weather station in decimal degrees. |
 | LONGITUDE | numeric | The longitude of the weather station in decimal degrees. |
 | DATE | date (m/d/yyyy) | The date the weather measurement was taken. |
-| TAVG | Celcius | The average temperature for the day in degrees Celcius. |
+| TAVG | Celsius | The average temperature for the day in degrees Celsius. |
 
 Weather data came from:
 
@@ -100,7 +100,7 @@ Figure 6: `./plots/woodpecker_figure.tiff`
 
 This folder has all the R code to:
 
-1. generate simualtions, fit them, and plot out the results.
+1. Generate simulations, fit them, and plot out the results.
 2. Analyze the data from the opossum case study and plot out the results.
 3. Analyze the data from the woodpecker case study and plot out the results.
 
@@ -116,7 +116,7 @@ To carry out the simulation study I wrote 7 scripts. To fit the simulations, onl
 |---|---|---|
 | `./R/fit_simulation_sweep.R` | Fits models to simulated data across all scenarios and models, saving the output. | Nothing. |
 | `./R/simulate.R` | Functions to simulate data for autologistic and dynamic occupancy models. | `./R/simulation_sweep.R` |
-| `./R/simulation_sweep.R` | Gets the pieces together to simulate data for a given scenario and dataset, which is then passed to `./R/simulate.R` to be generated. This script will save  all the simulations in a file `./data/sim_sweep.RDS`. If it has been created, the simulations will not be carried out again and instead `./data/sim_sweep.RDS` will be  read in. As a result, this script often gets sourced to bring in the associated simulated data to be used to generate results and plot them out (in addition to fitting the models).  | `./R/fit_simulation_sweep.R`,  `./R/plot_rmse_sweep.R`,  `./R/pull_coefs_sweep.R` |
+| `./R/simulation_sweep.R` | Gets the pieces together to simulate data for a given scenario and data set, which is then passed to `./R/simulate.R` to be generated. This script will save  all the simulations in a file `./data/sim_sweep.RDS`. If it has been created, the simulations will not be carried out again and instead `./data/sim_sweep.RDS` will be  read in. As a result, this script often gets sourced to bring in the associated simulated data to be used to generate results and plot them out (in addition to fitting the models).  | `./R/fit_simulation_sweep.R`,  `./R/plot_rmse_sweep.R`,  `./R/pull_coefs_sweep.R` |
 | `./R/simulation_utils.R` | Has functions to sets up the simulated datasets to be ran in parallel as well as utility functions to summarise results | `./R/fit_simulation_sweep.R`, `./R/pull_coefs_sweep.R` |
 | `./R/pull_coefs_sweep.R` | Generates the results file in the data sub-folder to plot out the results from the simulation study. | Nothing. |
 | `./R/plot_rmse_sweep.R` | Generates all of the simulation study figures. I use `bbplot` to generate this plots, which can be  found here: https://github.com/dapperstats/bbplot. | Nothing |
