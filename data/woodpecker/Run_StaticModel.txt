@@ -1,0 +1,150 @@
+#### ------------------------------------------------------------------------------ ####
+#### Specification of Bayesian single-season occupancy model for Black-backed Woodpeckers.
+#### This model corresponds to the "static model" in the main text.
+# Random intercept for fireID
+# Habitat type modeled as a random intercept
+# 6 covars on psi
+# 3 covars on p
+# Using R version 4.1.0 and JAGS version 4.3.0
+#### ------------------------------------------------------------------------------- ####
+
+library(R2jags)
+library(dclone)
+
+#### Load data and organize for the model
+## Note: data are archived as .csv files to facilitate long-term storage
+## Be sure that the current working directory is set to correct folder
+X.array <- read.csv("static_X.array.csv")
+det.covars <- read.csv("detection_covars.csv")
+S.jday <- read.csv("static_S.jday.csv")
+site.covars <- read.csv("static_site_covars.csv")
+
+X.naive <- apply(X.array, 1, max, na.rm = T) # max detection for each site
+
+mod.data = list(
+  X.array = X.array,
+  X.naive = X.naive,
+  ef = det.covars$ef,
+  itype = det.covars$itype,
+  S.elev.res = site.covars$S.elev,
+  S.lat = site.covars$S.lat,
+  S.bs100 = site.covars$S.bs100,
+  S.precc100 = site.covars$S.precc100,
+  whr = as.factor(site.covars$whr),
+  S.jday = S.jday,
+  site.code = site.covars$site.code,
+  fireID =as.factor(site.covars$fireID)
+)
+
+
+## Clean up the workspace
+rm(list=setdiff(ls(), "mod.data"))
+attach(mod.data)
+
+
+#### -------------------------------- JAGS MODEL ------------------------------------------ ####
+
+mod.function <- function(){
+  
+  #### PRIORS
+  
+  ## Priors on logit-linear model coefficients
+  a.day ~ dnorm(0,0.2)    # coefficients on detection
+  a.type ~ dnorm(0,0.2) 
+  a.ef ~ dnorm(0,0.2)
+  b.elev ~ dnorm(0,0.2)   # coefficients on occupancy
+  b.elevsq ~ dnorm(0,0.2)
+  b.whrsize ~ dnorm(0,0.2)
+  b.sev ~ dnorm(0,0.2)
+  b.precc ~ dnorm(0,0.2)
+  b.lat ~ dnorm(0,0.2)
+  
+  ## Prior on detection model intercept      
+  p0 ~ dunif(0.01, 0.99)     # expected value in interval (0,1)
+  a0 <- log(p0/(1-p0))       # logit-transform  
+  
+  ## Prior on occupancy intercept (random effect of WHR type)
+  psi0 ~ dunif(0.01, 0.99)
+  b0.mu <- log(psi0/(1-psi0))
+  for (m in 1:n.whr) {
+    b0[m] ~ dnorm(b0.mu, 0.2)	  
+  }
+  b0.mean <- mean(b0)   # monitor the average intercept for plotting and predicting
+  
+  ## Prior on fire random effect variance
+  fire.sigma ~ dunif(0.01, 3)    # sd between 0.01 and 3 on logit scale
+  fire.tau <- 1/(fire.sigma * fire.sigma)
+  
+  ## Draw random intercept for fire area (blups)
+  for (i in 1:n.fires){
+    b.fire[i] ~ dnorm(0, fire.tau)
+  }
+  
+  #### MODEL: Loop through all sites
+  for(j in 1:n.sites){
+    
+    #### Model for first survey t = 1
+    ## State process 
+    z[j] ~ dbern(psi[j])
+    logit(psi[j]) <- b0[WHR[j]] + b.elev*Elev[j] + b.elevsq*(Elev[j])^2 +
+      b.whrsize*WHRsize[j] + b.sev*Sev100[j] + b.precc*Precc[j] +
+      b.lat*Lat[j] + b.fire[Fire[j]]
+    
+    ## Observation process
+    for(k in 1:n.surveys){
+      y[j,k] ~ dbern(z.p[j,k])
+      z.p[j,k] <- z[j]*p[j,k] 
+      logit(p[j,k]) <- a0 + a.day*Day[j] + a.type*Type[k] + a.ef*Ef[k]
+    }
+  }
+}
+
+
+#### -------------------------------- RUN JAGS ------------------------------------------ ####
+
+## Data for JAGS
+jags.data <- list(y = X.array,
+                  Day = S.jday$jday,
+                  Type = itype,
+                  Ef = ef,
+                  Elev = S.elev.res,
+                  WHRsize = as.numeric(whr), 
+                  Lat = S.lat,
+                  Sev100 = S.bs100,
+                  Precc = S.precc100,
+                  WHR = as.numeric(whr),
+                  Fire = as.numeric(fireID),
+                  n.sites = dim(X.array)[1],
+                  n.surveys = dim(X.array)[2],
+                  n.fires = length(unique(fireID)),
+                  n.whr = length(unique(whr)))
+
+params.save <- c("a0","a.day","a.type","a.ef","b0","b.elev","b.elevsq",
+                 "b.whrsize","b.sev","b.precc","b.lat","b0.mean") 
+
+## Initial values
+inits <- function() {
+  list(z = X.naive)  
+}
+
+## Values for MCMC
+nc <- 3
+n.adapt <- 1000
+n.burn <- 30000
+n.iter <- 50000
+n.thin <- 100   # yields 1500 posterior samples
+
+## Parallelize 
+cl <- makePSOCKcluster(nc) # nc is number of cores (1 for each chain)
+tmp <- clusterEvalQ(cl, library(dclone))  # Check that `dclone` is loaded on each of cl's workers. 
+parLoadModule(cl, "glm")  # load the JAGS module 'glm' on each worker
+parListModules(cl)  # make sure previous line worked.
+
+
+#### Run the model
+start.time<-Sys.time()
+occ.run <- jags.parfit(cl, data=jags.data, params=params.save, model=mod.function, inits=inits, 
+                       n.chains=nc, n.adapt=n.adapt, n.update=n.burn, n.iter=n.iter, thin=n.thin)
+stopCluster(cl)    # close out the cluster.
+elapsed.time = difftime(Sys.time(), start.time, units='mins')
+elapsed.time 
