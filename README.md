@@ -87,12 +87,12 @@ I greatly thank Andrew Stillman and Morgan Tingley for their conversations while
 
 This folder contains the six associated figures in the manuscript. You can look to the manuscript to see their figure legends.
 
-Figure 1: `./plots/relative_bias_intercepts.tiff`
-Figure 2: `./plots/relative_bias_slopes.tiff`
-Figure 3: `./plots/ci_width_intercepts.tiff`
-Figure 4: `./plots/ci_width_slopes.tiff`
-Figure 5: `./plots/opossum_figure.tiff`
-Figure 6: `./plots/woodpecker_figure.tiff`
+Figure 1: `./plots/relative_bias_intercepts.tiff`  
+Figure 2: `./plots/relative_bias_slopes.tiff`  
+Figure 3: `./plots/ci_width_intercepts.tiff`  
+Figure 4: `./plots/ci_width_slopes.tiff`  
+Figure 5: `./plots/opossum_figure.tiff`  
+Figure 6: `./plots/woodpecker_figure.tiff`  
 
 [Back to table of contents ⤒](#a-repository-for)
 
