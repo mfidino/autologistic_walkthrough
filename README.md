@@ -9,7 +9,7 @@ Fidino, M. Estimating species occupancy across multiple sampling seasons with au
 1. [What's in this repository?](#whats-in-this-repository)
 2. [The working directory](#the-working-directory)
 3. [The data folder (`./data`)](#the-data-folder-data)
-4. [The plots folder (`./plots`)](#-the-plots-folder-plots)
+4. [The plots folder (`./plots`)](#the-plots-folder-plots)
 5. [The R folder (`./R`)](#the-r-folder-r)
 6. [R session information](#r-session-information)
 
