@@ -27,7 +27,7 @@ Aside from the aforementioned folders, the working directory here stores the `.g
 
 [Back to table of contents ⤒](#a-repository-for)
 
-## The data folder
+## The data folder (`./data`)
 
 The data folder has two sub-folders (one for each case study). Aside from this, there is a results file for the simulation study titled `./data/sim_sweep_rmse.csv`. This file has 2080 rows and 11 columns.
 
@@ -83,7 +83,7 @@ I greatly thank Andrew Stillman and Morgan Tingley for their conversations while
 
 [Back to table of contents ⤒](#a-repository-for)
 
-## The plots folder
+## The plots folder (`./plots`)
 
 This folder contains the six associated figures in the manuscript. You can look to the manuscript to see their figure legends.
 
@@ -96,7 +96,7 @@ Figure 6: `./plots/woodpecker_figure.tiff`
 
 [Back to table of contents ⤒](#a-repository-for)
 
-## The R folder
+## The R folder (`./R`)
 
 This folder has all the R code to:
 
